@@ -30,7 +30,6 @@ import time
 import rclpy #use ROS2 python library 
 from rclpy.node import Node  #import Node class
 
-#from machine_interfaces.msg import HardwareStatus   #Machine Interface package was accidentally deleted. 
 from machine_interfaces.msg import ServoStatus
 
 
