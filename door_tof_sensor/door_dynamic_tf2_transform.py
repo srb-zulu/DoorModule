@@ -82,8 +82,6 @@ class DynamicFrameBroadcaster(Node):
             t.transform.translation.y = 0.0 #-1.0
             t.transform.translation.z = 0.0 #0.2
 
-            #"-0.06 -0.5 0.5"
-
             # For the same reason, turtle can only rotate around one axis
             # and this why we set rotation in x and y to 0 and obtain
             # rotation in z axis from the message
