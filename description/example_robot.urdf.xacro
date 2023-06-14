@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="robot">
+
+    <!-- This is an example of a URDF. -->
+    <!-- As we move through the file, new things to note will be pointed out. -->
+    <!-- It's not meant an example of GOOD design, but an example of some of the various features of URDF/xacro. -->
+
+    <!-- This will include all the contents of example_include.xacro first. Go check it out! -->
+    <xacro:include filename="example_include.xacro" />
+
+    <!-- This first link called "world" is empty -->
+    <link name="world"></link>
+
+    <!-- A simple fixed joint from our empty world link, to our base. -->
+    <!-- The base origin is offset from the world origin. -->
+    <joint name="base_joint" type="fixed">
+        <origin xyz="1.0 0.0 0" rpy="0 0 0"/>
+        <parent link="world"/>
+        <child link="base_link"/>        
+    </joint>
+
+
+    <!-- base_link is a large rectangular plate. Some things to note: -->
+    <!-- - We set the visual origin Z to half the box height, so that the link origin sits at the bottom of the box -->
+    <!-- - We set the collision to be identical to the visual -->
+    <!-- - We specified the colour manually (but still need to enter a name) -->
+    <!-- - We specified all the inertial parameters manually -->
+    <link name="base_link">
+        <visual>
+            <origin xyz="0.0 1.0 0.0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.5" radius="0.025" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0.2 0.2 1 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- A simple fixed joint from our empty world link, to our base. -->
+    <!-- The base origin is offset from the world origin. -->
+    <joint name="door_joint" type="revolute">
+        <origin xyz="-0.25 0.0 0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="door_link"/>       
+        <axis xyz="0 -1 0"/>
+        <limit lower="0" upper="${pi/2}" velocity="100" effort="100"/> 
+    </joint>
+
+    <!-- base_link is a large rectangular plate. Some things to note: -->
+    <!-- - We set the visual origin Z to half the box height, so that the link origin sits at the bottom of the box -->
+    <!-- - We set the collision to be identical to the visual -->
+    <!-- - We specified the colour manually (but still need to enter a name) -->
+    <!-- - We specified all the inertial parameters manually -->
+    <link name="door_link">
+        <visual>
+            <origin xyz="-0.06 -0.5 0.25" rpy="0 1.57 0"/>
+            <geometry>
+                <!-- <box size="2.5 1.5 0.1" /> -->
+                <mesh filename="package://urdf_example/worlds/DoorModule1.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0.2 1 0.2 1"/>
+            </material>
+        </visual>
+    </link>    
+
+    <!-- camera_joint describes where the camera is relative to the arm -->
+    <!-- - Even though the camera isn't moving relative to the arm, it will probably be helpful to have its own link/frame rather than just adding more visuals to the arm -->
+    <!-- - For this example, the camera_link origin will be at the centre of the camera's "sensor" -->
+    <joint name="vl53l8cx_joint" type="fixed">
+        <origin xyz="0.1 -0.9 0.245" rpy="0 1.57 0"/>
+        <parent link="door_link"/>
+        <child link="vl53l8cx_frame"/>        
+    </joint>
+    
+    <!-- camera_link describes the camera at the end of the arm -->
+    <!-- - It has multiple visual elements, which ultimately get combined together -->
+    <!-- - Even if we specify different materials, RViz will just colour them all the same as the first -->
+    <!-- - Although we could also specify multiple collision geometries, instead we just use a single box that encompasses the whole camera -->
+    <link name="vl53l8cx_frame">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+            <material name="white" />            
+        </visual>
+    <collision>
+        <geometry>
+            <box size="0.01 0.01 0.01" />
+        </geometry>
+    </collision>
+
+    </link>
+
+</robot>
+
